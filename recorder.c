@@ -10,7 +10,7 @@
 #include "recorder.h"
 #include "shutdown.h"
 
-#define RECORDERBUFSIZE  (MEGABYTE(20) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
+#define RECORDERBUFSIZE  (MEGABYTE(100) / TS_SIZE * TS_SIZE) // multiple of TS_SIZE
 
 // The maximum time we wait before assuming that a recorded video data stream
 // is broken:
