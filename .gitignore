@@ -1,0 +1,12 @@
+.dependencies
+*.o
+vdr
+vdr.pc
+po/*.pot
+po/*.mo
+include/
+libsi/libsi.a
+locale/
+PLUGINS/src/*/po/*.mo
+PLUGINS/src/*/po/*.pot
+PLUGINS/src/*/*.so
