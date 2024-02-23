@@ -1543,19 +1543,28 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
                     dsyslog("activated name checking for initial read of video directory");
                     initial = false;
                     }
-                 if (Recordings == deletedRecordings || initial || !Recordings->GetByName(buffer)) {
-                    cRecording *r = new cRecording(buffer);
-                    if (r->Name()) {
-                       r->NumFrames(); // initializes the numFrames member
-                       r->FileSizeMB(); // initializes the fileSizeMB member
-                       r->IsOnVideoDirectoryFileSystem(); // initializes the isOnVideoDirectoryFileSystem member
-                       if (Recordings == deletedRecordings)
-                          r->SetDeleted();
-                       Recordings->Add(r);
-                       count = recordings->Count();
+
+                 // update of a existing recording has to update error counter from info file
+                 cRecording *recording = Recordings->GetByName(buffer);
+                 if (!initial && recording) {
+                    cRecordingInfo *info = recording->Info();
+                    if (!info->Read()) esyslog("read info file from %s failed", DirName);
+                    }
+                 else {
+                    if (Recordings == deletedRecordings || initial || !recording) {
+                       cRecording *r = new cRecording(buffer);
+                       if (r->Name()) {
+                          r->NumFrames(); // initializes the numFrames member
+                          r->FileSizeMB(); // initializes the fileSizeMB member
+                          r->IsOnVideoDirectoryFileSystem(); // initializes the isOnVideoDirectoryFileSystem member
+                          if (Recordings == deletedRecordings)
+                             r->SetDeleted();
+                          Recordings->Add(r);
+                          count = recordings->Count();
+                          }
+                       else
+                          delete r;
                        }
-                    else
-                       delete r;
                     }
                  StateKey.Remove();
                  }
